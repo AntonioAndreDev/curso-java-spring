@@ -28,8 +28,8 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(UsernameUniqueViolationException.class)
-    public ResponseEntity<ErrorMessage> MethodArgumentNotValidException(RuntimeException exception,
-                                                                        HttpServletRequest request) {
+    public ResponseEntity<ErrorMessage> UsernameUniqueViolationException(RuntimeException exception,
+                                                                         HttpServletRequest request) {
 
         log.error("ApiError - ", exception);
         return ResponseEntity
