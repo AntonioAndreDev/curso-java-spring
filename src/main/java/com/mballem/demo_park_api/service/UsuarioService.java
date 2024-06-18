@@ -23,8 +23,11 @@ public class UsuarioService {
         );
     }
 
-    @Transactional(readOnly = true)
-    public Usuario buscarTodos() {
-        return usuarioRepository.findAll().get(0);
+    @Transactional
+    public Usuario editarSenha(Long id, String password) {
+        Usuario user = buscarPorId(id);
+        user.setPassword(password);
+        return user;
     }
+
 }

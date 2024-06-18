@@ -26,9 +26,9 @@ public class UsuarioController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping()
-    public ResponseEntity<Usuario> index() {
-        Usuario user = usuarioService.buscarTodos();
+    @PatchMapping("/{id}")
+    public ResponseEntity<Usuario> updatePassword(@PathVariable Long id, @RequestBody Usuario usuario) {
+        Usuario user = usuarioService.editarSenha(id, usuario.getPassword());
         return ResponseEntity.ok(user);
     }
 
