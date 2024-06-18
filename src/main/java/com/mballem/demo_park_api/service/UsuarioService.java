@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
@@ -30,4 +32,15 @@ public class UsuarioService {
         return user;
     }
 
+    @Transactional(readOnly = true)
+    public List<Usuario> buscarTodos() {
+        return usuarioRepository.findAll();
+    }
+
+    @Transactional
+    public Usuario deletarPorId(Long id) {
+        Usuario user = buscarPorId(id);
+        usuarioRepository.delete(user);
+        return user;
+    }
 }
