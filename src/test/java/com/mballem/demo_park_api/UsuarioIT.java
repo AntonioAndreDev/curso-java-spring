@@ -1,7 +1,11 @@
 package com.mballem.demo_park_api;
 
+import com.mballem.demo_park_api.web.dto.UsuarioCreateDto;
+import com.mballem.demo_park_api.web.dto.UsuarioResponseDto;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -12,4 +16,25 @@ public class UsuarioIT {
 
     @Autowired
     WebTestClient testClient;
+
+    @Test
+    // nome da funcao = metodoQueVaiSerTestado_OqueVaiSerVerificado_OqueSeEsperaDeResposta
+    public void createUsuario_ComUsernameEPasswordValidos_RetornarUsuarioCriadoComStatus201() {
+        // faz a configuração do corpo da requisição
+        UsuarioResponseDto responseBody = testClient
+                .post()
+                .uri("/api/usuarios")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UsuarioCreateDto("tody@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(UsuarioResponseDto.class)
+                .returnResult().getResponseBody();
+
+        // realiza os testes
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getId()).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getUsername()).isEqualTo("tody@gmail.com");
+        org.assertj.core.api.Assertions.assertThat(responseBody.getRole()).isEqualTo("USER");
+    }
 }
