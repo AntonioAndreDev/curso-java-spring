@@ -111,9 +111,30 @@ public class UsuarioController {
         return ResponseEntity.ok(UsuarioMapper.toListDto(users));
     }
 
+    @Operation(
+            summary = "Apagar um usuário pelo id",
+            description = "Recurso para apagar um usuário pelo id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Usuário deletado com sucesso",
+                            content = @Content(mediaType = "application/json",
+                                schema = @Schema(implementation =  UsuarioResponseDto.class)
+                            )
+                    ),
+
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Usuário não encontrado",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation =  ErrorMessage.class)
+                            )
+                    )
+            }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<UsuarioResponseDto> delete(@PathVariable Long id) {
-       Usuario user = usuarioService.deletarPorId(id);
+        Usuario user = usuarioService.deletarPorId(id);
         return ResponseEntity.ok(UsuarioMapper.toDto(user));
     }
 
