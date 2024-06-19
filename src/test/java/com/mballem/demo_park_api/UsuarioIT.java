@@ -147,6 +147,24 @@ public class UsuarioIT {
         // realiza os testes
         org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
         org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(422);
+    }
 
+    @Test
+    // nome da funcao = metodoQueVaiSerTestado_OqueVaiSerVerificado_OqueSeEsperaDeResposta
+    public void createUsuario_ComUsernameRepetido_RetornarErrorMessageComStatus409() {
+        // faz a configuração do corpo da requisição
+        ErrorMessage responseBody = testClient
+                .post()
+                .uri("/api/usuarios")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UsuarioCreateDto("antonio@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isEqualTo(409)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        // realiza os testes
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(409);
     }
 }
