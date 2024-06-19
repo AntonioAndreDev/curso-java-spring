@@ -2,6 +2,7 @@ package com.mballem.demo_park_api;
 
 import com.mballem.demo_park_api.web.dto.UsuarioCreateDto;
 import com.mballem.demo_park_api.web.dto.UsuarioResponseDto;
+import com.mballem.demo_park_api.web.dto.UsuarioSenhaDto;
 import com.mballem.demo_park_api.web.exception.ErrorMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,4 +208,20 @@ public class UsuarioIT {
 
 
     }
+
+    @Test
+    // nome da funcao = metodoQueVaiSerTestado_OqueVaiSerVerificado_OqueSeEsperaDeResposta
+    public void updatePassword_ComDadosValidos_RetornarSenhaAlteradaComSucessoComStatus204() {
+        // faz a configuração do corpo da requisição
+        testClient
+                .patch()
+                .uri("/api/usuarios/100")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UsuarioSenhaDto("123456", "123456", "123456"))
+                .exchange()
+                .expectStatus().isNoContent();
+
+        // como esse metodo nao possui um retorno (noContent) não precisa testar o objeto
+    }
+
 }
