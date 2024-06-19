@@ -188,4 +188,23 @@ public class UsuarioIT {
 
 
     }
+
+    @Test
+    // nome da funcao = metodoQueVaiSerTestado_OqueVaiSerVerificado_OqueSeEsperaDeResposta
+    public void getById_UsuarioInexistente_RetornarErrorMessageComStatus404() {
+        // faz a configuração do corpo da requisição
+        ErrorMessage responseBody = testClient
+                .get()
+                .uri("/api/usuarios/200")
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        // realiza os testes
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(404);
+
+
+    }
 }
