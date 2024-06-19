@@ -167,4 +167,25 @@ public class UsuarioIT {
         org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
         org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(409);
     }
+
+    @Test
+    // nome da funcao = metodoQueVaiSerTestado_OqueVaiSerVerificado_OqueSeEsperaDeResposta
+    public void getById_UsuarioExistente_RetornarUsuarioEncontradoComStatus200() {
+        // faz a configuração do corpo da requisição
+        UsuarioResponseDto responseBody = testClient
+                .get()
+                .uri("/api/usuarios/100")
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UsuarioResponseDto.class)
+                .returnResult().getResponseBody();
+
+        // realiza os testes
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getId()).isEqualTo(100);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getUsername()).isEqualTo("antonio@gmail.com");
+        org.assertj.core.api.Assertions.assertThat(responseBody.getRole()).isEqualTo("ADMIN");
+
+
+    }
 }
