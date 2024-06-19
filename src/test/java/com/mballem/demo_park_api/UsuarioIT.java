@@ -224,4 +224,26 @@ public class UsuarioIT {
         // como esse metodo nao possui um retorno (noContent) não precisa testar o objeto
     }
 
+    @Test
+    // nome da funcao = metodoQueVaiSerTestado_OqueVaiSerVerificado_OqueSeEsperaDeResposta
+    public void updatePassword_ComIdInexistente_RetornarErrorMessageComStatus404() {
+        // faz a configuração do corpo da requisição
+        ErrorMessage responseBody = testClient
+                .patch()
+                .uri("/api/usuarios/200")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UsuarioSenhaDto("123456", "123456", "123456"))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+            org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+            org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(404);
+
+
+
+
+    }
+
 }
