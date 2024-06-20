@@ -40,12 +40,12 @@ public class UsuarioService {
         if (!novaSenha.equals(confirmaSenha)) {
             throw new PasswordInvalidException("Nova senha não confere com confirmação de senha");
         }
-        Usuario user = buscarPorId(id);
 
-        if (!user.getPassword().equals(senhaAtual)) {
+        Usuario user = buscarPorId(id);
+        if (!passwordEncoder.matches(senhaAtual, user.getPassword())) {
             throw new PasswordInvalidException("Sua senha não confere");
         }
-        user.setPassword(novaSenha);
+        user.setPassword(passwordEncoder.encode(novaSenha));
         return user;
     }
 
