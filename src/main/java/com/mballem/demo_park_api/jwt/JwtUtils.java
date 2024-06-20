@@ -26,6 +26,7 @@ public class JwtUtils {
 
     // prepara a chave para que ela possa ser criptografada
     private static javax.crypto.SecretKey generateKey() {
+        log.info("Entrei na função generateKey 2°(POST -> /api/auth)");
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -38,6 +39,7 @@ public class JwtUtils {
 
     // gera token JWT
     public static JwtToken createToken(String username, String role) {
+        log.info("Entrei na função createToken 1°(POST -> /api/auth)");
         Date issuedAt = new Date();
         Date limit = toExpireDate(issuedAt);
         String token = Jwts.builder()
@@ -54,6 +56,8 @@ public class JwtUtils {
 
     // recupera o corpo do token, remvendo a instruçãõ BEARER
     private static String refactorToken(String token) {
+        log.info("Token recebido: {}", token);
+        log.info("Entrei na função refactorToken (GET -> /api/auth)");
         if (token.contains(JWT_BEARER)) {
             return token.substring(JWT_BEARER.length());
         }
@@ -64,6 +68,8 @@ public class JwtUtils {
     // recupera o conteúdo do token
     private static Claims getClaimsFromToken(String token) {
         try {
+            log.info("Token recebido: {}", token);
+            log.info("Entrei na função getClaimsFromToken (GET -> /api/auth)");
             return Jwts.parser()
                     .verifyWith(generateKey())
                     .build()
@@ -80,6 +86,8 @@ public class JwtUtils {
 
     public static boolean isTokenValid(String token) {
         try {
+            log.info("Token recebido: {}", token);
+            log.info("Entrei na função isTokenValid (GET -> /api/auth)");
             Jwts.parser()
                     .verifyWith(generateKey())
                     .build()
