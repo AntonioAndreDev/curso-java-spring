@@ -57,4 +57,10 @@ public class UsuarioService {
         usuarioRepository.delete(user);
         return user;
     }
+
+    @Transactional(readOnly = true)
+    public Usuario buscarPorUsername(String username) {
+        return usuarioRepository.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException(String.format("Usuario com username {%s} não encontrado!", username)));
+    }
 }
