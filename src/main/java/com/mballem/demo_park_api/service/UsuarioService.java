@@ -63,4 +63,9 @@ public class UsuarioService {
         return usuarioRepository.findByUsername(username).orElseThrow(
                 () -> new UserNotFoundException(String.format("Usuario com username {%s} não encontrado!", username)));
     }
+
+    @Transactional(readOnly = true)
+    public Usuario.Role buscarRolePorUsername(String username) {
+        return usuarioRepository.findRoleByUsername(username);
+    }
 }
