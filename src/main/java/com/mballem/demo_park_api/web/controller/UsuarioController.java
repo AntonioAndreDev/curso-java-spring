@@ -57,7 +57,7 @@ public class UsuarioController {
 
     @Operation(
             summary = "Buscar um usuário pelo id",
-            description = "Recurso para buscar um usuário",
+            description = "Requisição exige um Bearer Token. Acesso restrito a ADMIN | USER",
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recurso encontrado com sucesso",
@@ -82,7 +82,7 @@ public class UsuarioController {
 
     @Operation(
             summary = "Atualizar a senha de um usuário",
-            description = "Recurso para atualizar senha",
+            description = "Requisição exige um Bearer Token. Acesso restrito a ADMIN | USER",
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "204", description = "Senha atualizada com sucesso",
@@ -111,7 +111,7 @@ public class UsuarioController {
 
     @Operation(
             summary = "Listar todos os usuários",
-            description = "Recurso para listar todos os usuários",
+            description = "Requisição exige um Bearer Token. Acesso restrito a ADMIN",
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Listagem de todos usuários com sucesso",
