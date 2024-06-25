@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name= "Usuários", description = "Contém todas as operações relativas aos recursos para cadastro, edição, leitura" +
+@Tag(name = "Usuários", description = "Contém todas as operações relativas aos recursos para cadastro, edição, leitura" +
         " e exclusão de um usuário. (CRUD)")
 @RestController
 @RequestMapping("/api/usuarios")
@@ -37,15 +38,15 @@ public class UsuarioController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Recurso criado com sucesso",
                             content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UsuarioResponseDto.class))),
+                                    schema = @Schema(implementation = UsuarioResponseDto.class))),
 
                     @ApiResponse(responseCode = "409", description = "Usuário email já cadastrado no sistema",
                             content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorMessage.class))),
+                                    schema = @Schema(implementation = ErrorMessage.class))),
 
                     @ApiResponse(responseCode = "422", description = "Recursos não processados por dados de entrada inválidos",
                             content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorMessage.class))),
+                                    schema = @Schema(implementation = ErrorMessage.class))),
             }
     )
     @PostMapping
@@ -57,10 +58,15 @@ public class UsuarioController {
     @Operation(
             summary = "Buscar um usuário pelo id",
             description = "Recurso para buscar um usuário",
+            security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recurso encontrado com sucesso",
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = UsuarioResponseDto.class))),
+
+                    @ApiResponse(responseCode = "403", description = "Usuario sem permissao para acessar esse recurso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
 
                     @ApiResponse(responseCode = "404", description = "Recursos não encontrado",
                             content = @Content(mediaType = "application/json",
@@ -77,12 +83,17 @@ public class UsuarioController {
     @Operation(
             summary = "Atualizar a senha de um usuário",
             description = "Recurso para atualizar senha",
+            security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "204", description = "Senha atualizada com sucesso",
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = Void.class))),
 
                     @ApiResponse(responseCode = "400", description = "Senha não confere",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+
+                    @ApiResponse(responseCode = "403", description = "Usuario sem permissao para acessar esse recurso",
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ErrorMessage.class))),
 
@@ -101,10 +112,16 @@ public class UsuarioController {
     @Operation(
             summary = "Listar todos os usuários",
             description = "Recurso para listar todos os usuários",
+            security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Listagem de todos usuários com sucesso",
                             content = @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema =  @Schema(implementation = UsuarioResponseDto.class)))),
+                                    array = @ArraySchema(schema = @Schema(implementation = UsuarioResponseDto.class)))),
+
+                    @ApiResponse(responseCode = "403", description = "Usuario sem permissao para acessar esse recurso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+
 
             }
     )
@@ -123,7 +140,7 @@ public class UsuarioController {
                             responseCode = "200",
                             description = "Usuário deletado com sucesso",
                             content = @Content(mediaType = "application/json",
-                                schema = @Schema(implementation =  UsuarioResponseDto.class)
+                                    schema = @Schema(implementation = UsuarioResponseDto.class)
                             )
                     ),
 
@@ -131,7 +148,7 @@ public class UsuarioController {
                             responseCode = "404",
                             description = "Usuário não encontrado",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation =  ErrorMessage.class)
+                                    schema = @Schema(implementation = ErrorMessage.class)
                             )
                     )
             }
