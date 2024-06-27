@@ -241,6 +241,7 @@ public class UsuarioIT {
         ErrorMessage responseBody = testClient
                 .get()
                 .uri("/api/usuarios/200")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody(ErrorMessage.class)
