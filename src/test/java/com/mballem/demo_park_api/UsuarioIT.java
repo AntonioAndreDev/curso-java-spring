@@ -280,6 +280,18 @@ public class UsuarioIT {
         testClient
                 .patch()
                 .uri("/api/usuarios/100")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UsuarioSenhaDto("123456", "123456", "123456"))
+                .exchange()
+                .expectStatus().isNoContent();
+
+        // como esse metodo nao possui um retorno (noContent) não precisa testar o objeto
+
+        testClient
+                .patch()
+                .uri("/api/usuarios/101")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "giuli@gmail.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioSenhaDto("123456", "123456", "123456"))
                 .exchange()
