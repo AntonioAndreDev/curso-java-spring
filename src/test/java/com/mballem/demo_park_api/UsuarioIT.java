@@ -340,6 +340,7 @@ public class UsuarioIT {
         ErrorMessage responseBody = testClient
                 .patch()
                 .uri("/api/usuarios/100")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioSenhaDto("", "", ""))
                 .exchange()
@@ -353,6 +354,7 @@ public class UsuarioIT {
         responseBody = testClient
                 .patch()
                 .uri("/api/usuarios/100")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioSenhaDto("1234567", "1234567", "1234567"))
                 .exchange()
@@ -366,6 +368,7 @@ public class UsuarioIT {
         responseBody = testClient
                 .patch()
                 .uri("/api/usuarios/100")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioSenhaDto("12345", "12345", "12345"))
                 .exchange()
@@ -379,11 +382,12 @@ public class UsuarioIT {
 
     @Test
     // nome da funcao = metodoQueVaiSerTestado_OqueVaiSerVerificado_OqueSeEsperaDeResposta
-    public void updatePassword_ComSenhaAtualInvalida_RetornarErrorMessageComStatus400() {
+    public void updatePassword_ComSenhasInvalidas_RetornarErrorMessageComStatus400() {
         // faz a configuração do corpo da requisição
         ErrorMessage responseBody = testClient
                 .patch()
                 .uri("/api/usuarios/100")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioSenhaDto("654321", "123456", "123456"))
                 .exchange()
@@ -397,6 +401,7 @@ public class UsuarioIT {
         responseBody = testClient
                 .patch()
                 .uri("/api/usuarios/100")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(new UsuarioSenhaDto("123456", "000000", "123456"))
                 .exchange()
