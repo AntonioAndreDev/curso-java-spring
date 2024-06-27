@@ -302,7 +302,7 @@ public class UsuarioIT {
 
     @Test
     // nome da funcao = metodoQueVaiSerTestado_OqueVaiSerVerificado_OqueSeEsperaDeResposta
-    public void updatePassword_ComIdInexistente_RetornarErrorMessageComStatus403() {
+    public void updatePassword_ComUsuariosDiferentes_RetornarErrorMessageComStatus403() {
         // faz a configuração do corpo da requisição
         ErrorMessage responseBody = testClient
                 .patch()
