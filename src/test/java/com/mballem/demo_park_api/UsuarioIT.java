@@ -256,6 +256,25 @@ public class UsuarioIT {
 
     @Test
     // nome da funcao = metodoQueVaiSerTestado_OqueVaiSerVerificado_OqueSeEsperaDeResposta
+    public void getById_ComUsuarioClienteBuscandoOutroCliente_RetornarErrorMessageComStatus403() {
+        // faz a configuração do corpo da requisição
+        ErrorMessage responseBody = testClient
+                .get()
+                .uri("/api/usuarios/102")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "giuli@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        // realiza os testes
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(403);
+
+    }
+
+    @Test
+    // nome da funcao = metodoQueVaiSerTestado_OqueVaiSerVerificado_OqueSeEsperaDeResposta
     public void updatePassword_ComDadosValidos_RetornarSenhaAlteradaComSucessoComStatus204() {
         // faz a configuração do corpo da requisição
         testClient
