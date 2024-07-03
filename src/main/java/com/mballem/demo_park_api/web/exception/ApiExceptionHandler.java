@@ -1,5 +1,6 @@
 package com.mballem.demo_park_api.web.exception;
 
+import com.mballem.demo_park_api.exception.CpfUniqueViolationException;
 import com.mballem.demo_park_api.exception.PasswordInvalidException;
 import com.mballem.demo_park_api.exception.UserNotFoundException;
 import com.mballem.demo_park_api.exception.UsernameUniqueViolationException;
@@ -34,9 +35,9 @@ public class ApiExceptionHandler {
     }
 
     // Trata erro em caso de tentar criar uma conta com um username já existente
-    @ExceptionHandler(UsernameUniqueViolationException.class)
-    public ResponseEntity<ErrorMessage> UsernameUniqueViolationException(RuntimeException exception,
-                                                                         HttpServletRequest request) {
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
+    public ResponseEntity<ErrorMessage> uniqueViolationException(RuntimeException exception,
+                                                                 HttpServletRequest request) {
 
         log.error("ApiError - ", exception);
         return ResponseEntity
@@ -71,7 +72,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorMessage> AccessDeniedException(AccessDeniedException exception,
-                                                                        HttpServletRequest request) {
+                                                              HttpServletRequest request) {
 
         log.error("ApiError - ", exception);
         return ResponseEntity
