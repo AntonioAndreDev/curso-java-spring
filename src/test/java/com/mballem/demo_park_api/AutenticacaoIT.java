@@ -2,6 +2,7 @@ package com.mballem.demo_park_api;
 
 import com.mballem.demo_park_api.jwt.JwtToken;
 import com.mballem.demo_park_api.web.dto.UsuarioLoginDto;
+import com.mballem.demo_park_api.web.exception.ErrorMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +31,36 @@ public class AutenticacaoIT {
                 .returnResult().getResponseBody();
 
         org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+
+    }
+
+    @Test
+    public void autenticar_ComCredenciaisInvalidas_RetornarErrorMessageComStatus400() {
+        ErrorMessage responseBody = testClient
+                .post()
+                .uri("/api/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UsuarioLoginDto("antonio@gmail.com", "654321"))
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(400);
+
+        responseBody = testClient
+                .post()
+                .uri("/api/auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(new UsuarioLoginDto("invalido@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(400);
 
     }
 }
