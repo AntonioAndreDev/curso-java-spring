@@ -56,6 +56,23 @@ public class ClienteIT {
     }
 
     @Test
+    public void criarCliente_ComUsuarioNaoPermitido_RetornarErrorMessageStatus403() {
+        ErrorMessage responseBody = testClient
+                .post()
+                .uri("api/clientes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
+                .bodyValue(new ClienteCreateDto("Tobias", "71844323048"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(403);
+    }
+
+    @Test
     public void criarCliente_ComDadosInvalidos_RetornarErrorMessageStatus422() {
         ErrorMessage responseBody = testClient
                 .post()
