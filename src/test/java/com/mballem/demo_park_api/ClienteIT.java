@@ -3,6 +3,7 @@ package com.mballem.demo_park_api;
 
 import com.mballem.demo_park_api.web.dto.ClienteCreateDto;
 import com.mballem.demo_park_api.web.dto.ClienteResponseDto;
+import com.mballem.demo_park_api.web.exception.ErrorMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,5 +36,22 @@ public class ClienteIT {
         org.assertj.core.api.Assertions.assertThat(responseBody.getId()).isNotNull();
         org.assertj.core.api.Assertions.assertThat(responseBody.getNome()).isEqualTo("Tobias");
         org.assertj.core.api.Assertions.assertThat(responseBody.getCpf()).isEqualTo("71844323048");
+    }
+
+    @Test
+    public void criarCliente_ComCpfJaCadastrado_RetornarErrorMessageStatus409() {
+        ErrorMessage responseBody = testClient
+                .post()
+                .uri("api/clientes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "toby@gmail.com", "123456"))
+                .bodyValue(new ClienteCreateDto("Tobias", "23265409058"))
+                .exchange()
+                .expectStatus().isEqualTo(409)
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getStatus()).isEqualTo(409);
     }
 }
