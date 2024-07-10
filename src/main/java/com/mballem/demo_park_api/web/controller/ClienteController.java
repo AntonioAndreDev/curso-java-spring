@@ -22,6 +22,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "Clientes", description = "Contém todas as operações relativas aos recursos para cadastro, edição, leitura" +
         " e exclusão de um cliente. (CRUD)")
 @RequiredArgsConstructor
@@ -87,6 +89,14 @@ public class ClienteController {
     public ResponseEntity<ClienteResponseDto> getById(@PathVariable Long id) {
         Cliente cliente = clienteService.buscarPorId(id);
         return ResponseEntity.ok(ClienteMapper.toDto(cliente));
+    }
+
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Cliente>> getAll() {
+        List<Cliente> clientes = clienteService.buscartodos();
+        return ResponseEntity.ok((clientes));
     }
 
 }

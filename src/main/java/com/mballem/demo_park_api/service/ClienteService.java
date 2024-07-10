@@ -9,6 +9,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class ClienteService {
@@ -29,5 +31,10 @@ public class ClienteService {
         return clienteRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Cliente id=%s não encontrado no sistema", id))
         );
+    }
+
+    @Transactional(readOnly = true)
+    public List<Cliente> buscartodos() {
+        return clienteRepository.findAll();
     }
 }
