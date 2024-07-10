@@ -20,10 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Clientes", description = "Contém todas as operações relativas aos recursos para cadastro, edição, leitura" +
         " e exclusão de um cliente. (CRUD)")
@@ -64,6 +61,12 @@ public class ClienteController {
         cliente.setUsuario(usuarioService.buscarPorId(userDetails.getId()));
         clienteService.salvar(cliente);
         return ResponseEntity.status(201).body(ClienteMapper.toDto(cliente));
+    }
+
+    @GetMapping("{/id}")
+    public ResponseEntity<ClienteResponseDto> getById(@PathVariable Long id) {
+        Cliente cliente = clienteService.buscarPorId(id);
+        return ResponseEntity.ok(ClienteMapper.toDto(cliente));
     }
 
 }
