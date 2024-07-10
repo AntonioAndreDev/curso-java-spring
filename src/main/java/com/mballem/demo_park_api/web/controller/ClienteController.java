@@ -3,12 +3,15 @@ package com.mballem.demo_park_api.web.controller;
 
 import com.mballem.demo_park_api.entity.Cliente;
 import com.mballem.demo_park_api.jwt.JwtUserDetails;
+import com.mballem.demo_park_api.repository.projection.ClienteProjection;
 import com.mballem.demo_park_api.service.ClienteService;
 import com.mballem.demo_park_api.service.UsuarioService;
 import com.mballem.demo_park_api.web.dto.ClienteCreateDto;
 import com.mballem.demo_park_api.web.dto.ClienteResponseDto;
+import com.mballem.demo_park_api.web.dto.PageableDto;
 import com.mballem.demo_park_api.web.dto.UsuarioResponseDto;
 import com.mballem.demo_park_api.web.dto.mapper.ClienteMapper;
+import com.mballem.demo_park_api.web.dto.mapper.PageableMapper;
 import com.mballem.demo_park_api.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -96,9 +99,9 @@ public class ClienteController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<Cliente>> getAll(Pageable pageable) {
-        Page<Cliente> clientes = clienteService.buscartodos(pageable);
-        return ResponseEntity.ok((clientes));
+    public ResponseEntity<PageableDto> getAll(Pageable pageable) {
+        Page<ClienteProjection> clientes = clienteService.buscartodos(pageable);
+        return ResponseEntity.ok((PageableMapper.toDto(clientes)));
     }
 
 }
