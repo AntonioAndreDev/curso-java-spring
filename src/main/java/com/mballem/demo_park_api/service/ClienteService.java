@@ -6,6 +6,8 @@ import com.mballem.demo_park_api.exception.EntityNotFoundException;
 import com.mballem.demo_park_api.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +36,7 @@ public class ClienteService {
     }
 
     @Transactional(readOnly = true)
-    public List<Cliente> buscartodos() {
-        return clienteRepository.findAll();
+    public Page<Cliente> buscartodos(Pageable pageable) {
+        return clienteRepository.findAll(pageable);
     }
 }
