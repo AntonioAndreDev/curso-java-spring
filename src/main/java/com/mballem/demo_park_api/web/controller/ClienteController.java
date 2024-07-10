@@ -14,9 +14,13 @@ import com.mballem.demo_park_api.web.dto.mapper.ClienteMapper;
 import com.mballem.demo_park_api.web.dto.mapper.PageableMapper;
 import com.mballem.demo_park_api.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.Query;
 import java.util.List;
 
 @Tag(name = "Clientes", description = "Contém todas as operações relativas aos recursos para cadastro, edição, leitura" +
@@ -78,7 +83,7 @@ public class ClienteController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = UsuarioResponseDto.class))),
 
-                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de cliente",
+                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de USER",
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ErrorMessage.class))),
 
@@ -97,9 +102,47 @@ public class ClienteController {
     }
 
 
+    @Operation(
+            summary = "Recuperar lista de clientes",
+            description = "Recurso para listar todos os clientes. Requisição exige um Bearer Token. Acesso restrito a" +
+                    " ADMIN ",
+            security = @SecurityRequirement(name = "security"),
+            parameters = {
+                    @Parameter(in = ParameterIn.QUERY,
+                            name = "page",
+                            description = "Número da página retornada",
+                            required = false,
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))
+                    ),
+                    @Parameter(
+                            in = ParameterIn.QUERY,
+                            name = "size",
+                            description = "Número de elementos por página",
+                            required = false,
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "20"))
+                    ),
+                    @Parameter(
+                            in = ParameterIn.QUERY,
+                            hidden = true,
+                            name = "sort",
+                            description = "Ordenação dos elementos",
+                            required = false,
+                            array = @ArraySchema(schema = @Schema(type = "string", defaultValue = "id,asc"))
+                    ),
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Recurso recuperado com sucesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = UsuarioResponseDto.class))),
+
+                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de USER",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+            }
+    )
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PageableDto> getAll(Pageable pageable) {
+    public ResponseEntity<PageableDto> getAll(@Parameter(hidden = true) Pageable pageable) {
         Page<ClienteProjection> clientes = clienteService.buscartodos(pageable);
         return ResponseEntity.ok((PageableMapper.toDto(clientes)));
     }
