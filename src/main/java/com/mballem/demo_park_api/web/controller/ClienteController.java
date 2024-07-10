@@ -145,7 +145,7 @@ public class ClienteController {
     )
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<PageableDto> getAll(@Parameter(hidden = true) Pageable pageable) {
+    public ResponseEntity<PageableDto> getAll(@Parameter(hidden = true) @PageableDefault(size = 5, sort = {"nome"}) Pageable pageable) {
         Page<ClienteProjection> clientes = clienteService.buscartodos(pageable);
         return ResponseEntity.ok((PageableMapper.toDto(clientes)));
     }
