@@ -82,7 +82,7 @@ public class ClienteController {
 
             }
     )
-    @GetMapping("{/id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClienteResponseDto> getById(@PathVariable Long id) {
         Cliente cliente = clienteService.buscarPorId(id);
