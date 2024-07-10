@@ -2,7 +2,7 @@ package com.mballem.demo_park_api.web.exception;
 
 import com.mballem.demo_park_api.exception.CpfUniqueViolationException;
 import com.mballem.demo_park_api.exception.PasswordInvalidException;
-import com.mballem.demo_park_api.exception.UserNotFoundException;
+import com.mballem.demo_park_api.exception.EntityNotFoundException;
 import com.mballem.demo_park_api.exception.UsernameUniqueViolationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ public class ApiExceptionHandler {
     }
 
     // Trata erro em caso de busca do usuário que nao existir
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorMessage> UserNotFoundException(RuntimeException exception,
                                                               HttpServletRequest request) {
 

@@ -1,7 +1,7 @@
 package com.mballem.demo_park_api.service;
 
 import com.mballem.demo_park_api.entity.Usuario;
-import com.mballem.demo_park_api.exception.UserNotFoundException;
+import com.mballem.demo_park_api.exception.EntityNotFoundException;
 import com.mballem.demo_park_api.exception.PasswordInvalidException;
 import com.mballem.demo_park_api.exception.UsernameUniqueViolationException;
 import com.mballem.demo_park_api.repository.UsuarioRepository;
@@ -31,7 +31,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException(String.format("Usuario {%s} não encontrado!", id))
+                () -> new EntityNotFoundException(String.format("Usuario {%s} não encontrado!", id))
         );
     }
 
@@ -64,7 +64,7 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario buscarPorUsername(String username) {
         return usuarioRepository.findByUsername(username).orElseThrow(
-                () -> new UserNotFoundException(String.format("Usuario com username {%s} não encontrado!", username)));
+                () -> new EntityNotFoundException(String.format("Usuario com username {%s} não encontrado!", username)));
     }
 
     @Transactional(readOnly = true)
