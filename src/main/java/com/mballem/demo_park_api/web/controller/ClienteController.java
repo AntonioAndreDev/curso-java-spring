@@ -150,4 +150,12 @@ public class ClienteController {
         return ResponseEntity.ok((PageableMapper.toDto(clientes)));
     }
 
+    @GetMapping("/detalhes")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<ClienteResponseDto> getDetails(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        Cliente cliente = clienteService.buscarPorUsuarioId(userDetails.getId());
+        return ResponseEntity.ok(ClienteMapper.toDto(cliente));
+    }
+
+
 }
