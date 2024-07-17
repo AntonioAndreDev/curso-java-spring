@@ -40,6 +40,11 @@ public class VagaController {
                     @ApiResponse(responseCode = "201", description = "Recurso criado com sucesso",
                             headers = @Header(name = HttpHeaders.LOCATION, description = "URL do recurso criado")),
 
+                    @ApiResponse(responseCode = "403", description = "Recurso não autorizado para role = USER. Acesso" +
+                            " exclusivo para role = ADMIN.",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+
                     @ApiResponse(responseCode = "409", description = "Vaga já cadastrada",
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ErrorMessage.class))),
@@ -69,6 +74,11 @@ public class VagaController {
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Recurso encontrado com sucesso",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+
+                    @ApiResponse(responseCode = "403", description = "Recurso não autorizado para role = USER. Acesso" +
+                            " exclusivo para role = ADMIN.",
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ErrorMessage.class))),
 
