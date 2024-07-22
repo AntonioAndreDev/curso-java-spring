@@ -157,13 +157,13 @@ public class EstacionamentoIT {
     @Test
     public void buscarCheckin_ComReciboInexistente_RetornarErrorStatus404() {
         testClient.get()
-                .uri("/api/v1/estacionamentos/check-in/{recibo}", "20230313-999999")
+                .uri("/api/estacionamentos/check-in/{recibo}", "20230313-999999")
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody()
                 .jsonPath("status").isEqualTo("404")
-                .jsonPath("path").isEqualTo("/api/v1/estacionamentos/check-in/20230313-999999")
+                .jsonPath("path").isEqualTo("/api/estacionamentos/check-in/20230313-999999")
                 .jsonPath("method").isEqualTo("GET");
     }
 
