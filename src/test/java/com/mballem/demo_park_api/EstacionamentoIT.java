@@ -1,6 +1,7 @@
 package com.mballem.demo_park_api;
 
 import com.mballem.demo_park_api.web.dto.EstacionamentoCreateDto;
+import com.mballem.demo_park_api.web.dto.PageableDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -225,6 +226,35 @@ public class EstacionamentoIT {
                 .jsonPath("path").isEqualTo("/api/estacionamentos/check-out/20230313-101300")
                 .jsonPath("method").isEqualTo("PUT");
 
+    }
+
+    @Test
+    public void executaGetAllEstacionamentosPorCpf_ComCpfValidoRoleAdmin_RetornarSucessoComStatus200() {
+        PageableDto responseBody = testClient.get().uri("/api/estacionamentos/cpf/{cpf}?size=1&page=0", "98401203015")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalElements()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getNumber()).isEqualTo(0);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getSize()).isEqualTo(1);
+
+        responseBody = testClient.get().uri("/api/estacionamentos/cpf/{cpf}", "98401203015")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalElements()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getNumber()).isEqualTo(0);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getSize()).isEqualTo(5);
     }
 
 }
