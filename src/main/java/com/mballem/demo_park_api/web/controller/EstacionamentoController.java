@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -142,6 +143,54 @@ public class EstacionamentoController {
         return ResponseEntity.ok(dto);
     }
 
+    @Operation(
+            summary = "Operação de buscar estacionamentos por CPF do cliente",
+            description = "Recurso para buscar registro de estacionamentos pelo CPF do cliente. Requisição exige " +
+                    "um Bearer " +
+                    "Token. Acesso restrito a ADMIN",
+            security = @SecurityRequirement(name = "security"),
+            parameters = {
+                    @Parameter(
+                            in = ParameterIn.PATH,
+                            name = "cpf",
+                            description = "CPF do cliente",
+                            required = true,
+                            content = @Content(schema = @Schema(type = "string", example = "12345678901"))
+                    ),
+                    @Parameter(in = ParameterIn.QUERY,
+                            name = "page",
+                            description = "Número da página retornada",
+                            required = false,
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))
+                    ),
+                    @Parameter(
+                            in = ParameterIn.QUERY,
+                            name = "size",
+                            description = "Número de elementos por página",
+                            required = false,
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "5"))
+                    ),
+                    @Parameter(
+                            in = ParameterIn.QUERY,
+                            hidden = true,
+                            name = "sort",
+                            description = "Ordenação dos elementos",
+                            required = false,
+                            array = @ArraySchema(schema = @Schema(type = "string", defaultValue = "dataEntrada,asc"))
+                    ),
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Recurso executado com sucesso",
+                            headers = @Header(name = HttpHeaders.LOCATION, description = "URL do recurso criado"),
+                            content = @Content(mediaType = "application/json;charset=UTF-8",
+                                    schema = @Schema(implementation = PageableDto.class))
+                    ),
+
+                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de USER",
+                            content = @Content(mediaType = "application/json;charset=UTF-8",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+            }
+    )
     @GetMapping("/cpf/{cpf}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageableDto> getAllEstacionamentosPorCpf(@PathVariable String cpf,
