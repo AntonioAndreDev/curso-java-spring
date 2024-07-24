@@ -257,4 +257,16 @@ public class EstacionamentoIT {
         org.assertj.core.api.Assertions.assertThat(responseBody.getSize()).isEqualTo(5);
     }
 
+    @Test
+    public void executaGetAllEstacionamentosPorCpf_ComCpfValidoRoleUser_RetornarErroComStatus403() {
+        testClient.get().uri("/api/estacionamentos/cpf/{cpf}", "98401203015")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "toin@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody()
+                .jsonPath("status").isEqualTo("403")
+                .jsonPath("path").isEqualTo("/api/estacionamentos/cpf/98401203015")
+                .jsonPath("method").isEqualTo("GET");
+    }
+
 }
