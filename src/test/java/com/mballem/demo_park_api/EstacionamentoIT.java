@@ -167,4 +167,23 @@ public class EstacionamentoIT {
                 .jsonPath("method").isEqualTo("GET");
     }
 
+    @Test
+    public void realizarCheckOut_ComReciboExistenteRoleAdmin_RetornarSucessoComStatus200() {
+        testClient.put().uri("/api/estacionamentos/check-out/{recibo}", "20230313-101300")
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("placa").isEqualTo("FIT-1020")
+                .jsonPath("marca").isEqualTo("FIAT")
+                .jsonPath("modelo").isEqualTo("PALIO")
+                .jsonPath("cor").isEqualTo("VERDE")
+                .jsonPath("clienteCpf").isEqualTo("98401203015")
+                .jsonPath("recibo").isEqualTo("20230313-101300")
+                .jsonPath("vagaCodigo").isEqualTo("A-01")
+                .jsonPath("dataSaida").exists()
+                .jsonPath("valor").exists();
+    }
+
 }
