@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -33,4 +34,25 @@ public class EstacionamentoService {
         return clienteVagaService.salvar(clienteVaga);
     }
 
+    @Transactional
+    public ClienteVaga checkOut(String recibo) {
+        ClienteVaga clienteVaga = clienteVagaService.buscarPorRecibo(recibo);
+
+        LocalDateTime dataSaida = LocalDateTime.now();
+
+        BigDecimal valorEstacionamento = EstacionamentoUtils.calcularCusto(clienteVaga.getDataEntrada(), dataSaida);
+        clienteVaga.setValor(valorEstacionamento);
+
+        long totalDeVezesQueEstacionou = clienteVagaService.getTotalDeVezesEstacionamentoCompleto(clienteVaga.getCliente().getCpf());
+
+        BigDecimal desconto = EstacionamentoUtils.calcularDesconto(valorEstacionamento, totalDeVezesQueEstacionou);
+        clienteVaga.setDesconto(desconto);
+
+        clienteVaga.setDataSaida(dataSaida);
+
+        clienteVaga.getVaga().setStatus(Vaga.StatusVaga.LIVRE);
+
+        return clienteVagaService.salvar(clienteVaga);
+
+    }
 }
