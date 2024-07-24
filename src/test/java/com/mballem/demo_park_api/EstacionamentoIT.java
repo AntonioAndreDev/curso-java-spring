@@ -199,4 +199,32 @@ public class EstacionamentoIT {
                 .jsonPath("method").isEqualTo("PUT");
     }
 
+    @Test
+    public void realizarCheckOut_ComReciboInexistenteRoleAdmin_RetornarErrorComStatus404() {
+        testClient.put().uri("/api/estacionamentos/check-out/{recibo}", "20230313-999999")
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("status").isEqualTo("404")
+                .jsonPath("path").isEqualTo("/api/estacionamentos/check-out/20230313-999999")
+                .jsonPath("method").isEqualTo("PUT");
+    }
+
+    @Test
+    public void realizarCheckOut_JaRealizadoOcheckOutComReciboExistenteRoleAdmin_RetornarErrorComStatus404() {
+        realizarCheckOut_ComReciboExistenteRoleAdmin_RetornarSucessoComStatus200();
+        testClient.put().uri("/api/estacionamentos/check-out/{recibo}", "20230313-101300")
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("status").isEqualTo("404")
+                .jsonPath("path").isEqualTo("/api/estacionamentos/check-out/20230313-101300")
+                .jsonPath("method").isEqualTo("PUT");
+
+    }
+
 }

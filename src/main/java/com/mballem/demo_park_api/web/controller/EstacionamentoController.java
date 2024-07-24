@@ -120,7 +120,8 @@ public class EstacionamentoController {
                             content = @Content(mediaType = "application/json;charset=UTF-8",
                                     schema = @Schema(implementation = ErrorMessage.class))),
 
-                    @ApiResponse(responseCode = "404", description = "Número do recibo não encontrado",
+                    @ApiResponse(responseCode = "404", description = "Número do recibo não encontrado ou checkOut já " +
+                            "realizado para o recibo informado",
                             content = @Content(mediaType = "application/json;charset=UTF-8",
                                     schema = @Schema(implementation = ErrorMessage.class))),
 
