@@ -110,7 +110,7 @@ public class EstacionamentoController {
                     "Token. Acesso restrito a ADMIN",
             security = @SecurityRequirement(name = "security"),
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Recurso executado com sucesso",
+                    @ApiResponse(responseCode = "200", description = "Recurso executado com sucesso",
                             headers = @Header(name = HttpHeaders.LOCATION, description = "URL do recurso criado"),
                             content = @Content(mediaType = "application/json;charset=UTF-8",
                                     schema = @Schema(implementation = EstacionamentoResponseDto.class))
