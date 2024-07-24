@@ -186,4 +186,17 @@ public class EstacionamentoIT {
                 .jsonPath("valor").exists();
     }
 
+    @Test
+    public void realizarCheckOut_ComReciboExistenteRoleUser_RetornarErrorComStatus403() {
+        testClient.put().uri("/api/estacionamentos/check-out/{recibo}", "20230313-101300")
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "toin@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody()
+                .jsonPath("status").isEqualTo("403")
+                .jsonPath("path").isEqualTo("/api/estacionamentos/check-out/20230313-101300")
+                .jsonPath("method").isEqualTo("PUT");
+    }
+
 }
