@@ -203,7 +203,7 @@ public class EstacionamentoController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping()
+    @GetMapping("/cliente")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageableDto> getAllEstacionamentosDoCliente(@AuthenticationPrincipal JwtUserDetails user,
                                                                       @PageableDefault(size = 5, sort = "dataEntrada",

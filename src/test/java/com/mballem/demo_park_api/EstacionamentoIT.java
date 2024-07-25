@@ -269,4 +269,46 @@ public class EstacionamentoIT {
                 .jsonPath("method").isEqualTo("GET");
     }
 
+    @Test
+    public void executaGetAllEstacionamentosDoCliente_DoClienteLogado_RetornarSucessoComStatus200() {
+        PageableDto responseBody = testClient.get().uri("/api/estacionamentos/cliente?size=1&page=0")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "toin@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalElements()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getNumber()).isEqualTo(0);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getSize()).isEqualTo(1);
+
+        responseBody = testClient.get().uri("/api/estacionamentos/cliente")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "toin@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(PageableDto.class)
+                .returnResult().getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(responseBody).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalElements()).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getTotalPages()).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getNumber()).isEqualTo(0);
+        org.assertj.core.api.Assertions.assertThat(responseBody.getSize()).isEqualTo(5);
+    }
+
+    @Test
+    public void executaGetAllEstacionamentosDoCliente_DoClienteRoleAdmin_RetornarErroComStatus403() {
+        testClient.get().uri("/api/estacionamentos/cliente")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "antonio@gmail.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody()
+                .jsonPath("status").isEqualTo("403")
+                .jsonPath("path").isEqualTo("/api/estacionamentos/cliente")
+                .jsonPath("method").isEqualTo("GET");
+    }
+
+
 }
