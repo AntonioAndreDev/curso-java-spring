@@ -43,7 +43,7 @@ public class JasperService {
             JasperPrint jasperPrint = JasperFillManager.fillReport(stream, params, dataSource.getConnection());
             bytes = JasperExportManager.exportReportToPdf(jasperPrint);
         } catch (IOException | JRException | SQLException e) {
-            log.error("Erro ao gerar PDF", e);
+            log.error("Erro ao gerar PDF", e.getCause());
             throw new RuntimeException(e);
         }
 
