@@ -211,6 +211,52 @@ public class EstacionamentoController {
         return ResponseEntity.ok(dto);
     }
 
+    @Operation(
+            summary = "Operação de buscar estacionamentos pelo Bearer Token do cliente",
+            description = "Recurso para buscar registro de estacionamentos pelo Bearer Token do cliente. Requisição " +
+                    "exige " +
+                    "um Bearer " +
+                    "Token. Acesso restrito a USER",
+            security = @SecurityRequirement(name = "security"),
+            parameters = {
+                    @Parameter(in = ParameterIn.QUERY,
+                            name = "page",
+                            description = "Número da página retornada",
+                            required = false,
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "0"))
+                    ),
+                    @Parameter(
+                            in = ParameterIn.QUERY,
+                            name = "size",
+                            description = "Número de elementos por página",
+                            required = false,
+                            content = @Content(schema = @Schema(type = "integer", defaultValue = "5"))
+                    ),
+                    @Parameter(
+                            in = ParameterIn.QUERY,
+                            hidden = true,
+                            name = "sort",
+                            description = "Ordenação dos elementos",
+                            required = false,
+                            array = @ArraySchema(schema = @Schema(type = "string", defaultValue = "dataEntrada,asc"))
+                    ),
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Recurso executado com sucesso",
+                            headers = @Header(name = HttpHeaders.LOCATION, description = "URL do recurso criado"),
+                            content = @Content(mediaType = "application/json;charset=UTF-8",
+                                    schema = @Schema(implementation = PageableDto.class))
+                    ),
+
+                    @ApiResponse(responseCode = "401", description = "Bearer Token inválido ou expirado",
+                            content = @Content(mediaType = "application/json;charset=UTF-8",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+
+                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de ADMIN",
+                            content = @Content(mediaType = "application/json;charset=UTF-8",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+            }
+    )
     @GetMapping("/cliente")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageableDto> getAllEstacionamentosDoCliente(@AuthenticationPrincipal JwtUserDetails user,
@@ -222,6 +268,28 @@ public class EstacionamentoController {
         return ResponseEntity.ok(dto);
     }
 
+    @Operation(
+            summary = "Operação que obtem relatorio",
+            description = "Recurso que gera relatório de estacionamentos feitos por um cliente. Requisição exige um " +
+                    "Bearer " +
+                    "Token. Acesso restrito a USER",
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Recurso executado com sucesso",
+                            headers = @Header(name = HttpHeaders.LOCATION, description = "URL do recurso criado"),
+                            content = @Content(mediaType = "application/json;charset=UTF-8",
+                                    schema = @Schema(implementation = EstacionamentoResponseDto.class))
+                    ),
+
+                    @ApiResponse(responseCode = "401", description = "Bearer Token inválido ou expirado",
+                            content = @Content(mediaType = "application/json;charset=UTF-8",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+
+                    @ApiResponse(responseCode = "403", description = "Recurso não permitido ao perfil de ADMIN",
+                            content = @Content(mediaType = "application/json;charset=UTF-8",
+                                    schema = @Schema(implementation = ErrorMessage.class))),
+            }
+    )
     @GetMapping("/relatorio")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> getRelatorio(HttpServletResponse response, @AuthenticationPrincipal JwtUserDetails jwtUserDetails) throws IOException {
