@@ -24,7 +24,7 @@ public class ApiExceptionHandler {
                                                                         HttpServletRequest request,
                                                                         BindingResult result) {
 
-        log.error("ApiError - ", exception);
+        log.error("ApiError - ", exception.getCause());
         return ResponseEntity
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -37,7 +37,7 @@ public class ApiExceptionHandler {
     public ResponseEntity<ErrorMessage> uniqueViolationException(RuntimeException exception,
                                                                  HttpServletRequest request) {
 
-        log.error("ApiError - ", exception);
+        log.error("ApiError - ", exception.getCause());
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -49,7 +49,7 @@ public class ApiExceptionHandler {
     public ResponseEntity<ErrorMessage> UserNotFoundException(RuntimeException exception,
                                                               HttpServletRequest request) {
 
-        log.error("ApiError - ", exception);
+        log.error("ApiError - ", exception.getCause());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -61,7 +61,7 @@ public class ApiExceptionHandler {
     public ResponseEntity<ErrorMessage> PasswordInvalidException(PasswordInvalidException exception,
                                                                  HttpServletRequest request) {
 
-        log.error("ApiError - ", exception);
+        log.error("ApiError - ", exception.getCause());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -72,10 +72,21 @@ public class ApiExceptionHandler {
     public ResponseEntity<ErrorMessage> AccessDeniedException(AccessDeniedException exception,
                                                               HttpServletRequest request) {
 
-        log.error("ApiError - ", exception);
+        log.error("ApiError - ", exception.getCause());
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(new ErrorMessage(request, HttpStatus.FORBIDDEN, exception.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> internalServerErrorException(Exception exception, HttpServletRequest request) {
+        ErrorMessage error = new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");
+        log.error("Internal Server Error {} {} ", error, exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(error);
     }
 }

@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -13,10 +14,10 @@ import java.util.Date;
 
 @Slf4j
 public class JwtUtils {
-
+    ;
     public static final String JWT_BEARER = "Bearer ";
     public static final String JWT_AUTHORIZATION = "Authorization";
-    public static final String SECRET_KEY = "76326726387-4324234384923432-432444325686765";
+    public static final String SECRET_KEY = System.getenv("SECRET_KEY_JWT");
     public static final long EXPIRE_DAYS = 0;
     public static final long EXPIRE_HOURS = 0;
     public static final long EXPIRE_MINUTES = 30;
@@ -25,7 +26,7 @@ public class JwtUtils {
     }
 
     // prepara a chave para que ela possa ser criptografada
-    private static javax.crypto.SecretKey generateKey() {
+    private static SecretKey generateKey() {
         log.info("Entrei na função generateKey 2°(POST -> /api/auth)");
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
