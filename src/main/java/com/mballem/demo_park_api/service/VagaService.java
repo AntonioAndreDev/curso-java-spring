@@ -22,7 +22,7 @@ public class VagaService {
         try {
             return vagaRepository.save(vaga);
         } catch (DataIntegrityViolationException ex) {
-            throw new CodigoUniqueViolationException(String.format("Vaga com código %s já cadastrada", vaga.getCodigo()));
+            throw new CodigoUniqueViolationException("Vaga", vaga.getCodigo());
         }
     }
 

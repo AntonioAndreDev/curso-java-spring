@@ -22,6 +22,18 @@ public class ApiExceptionHandler {
 
     private final MessageSource messageSource;
 
+    @ExceptionHandler(CodigoUniqueViolationException.class)
+    public ResponseEntity<ErrorMessage> uniqueViolationException(CodigoUniqueViolationException exception,
+                                                                 HttpServletRequest request) {
+        log.error("ApiError - ", exception.getCause());
+        String message = messageSource.getMessage("exception.CodigoUniqueViolationException",
+                new Object[]{exception.getRecurso(), exception.getCodigo()}, request.getLocale());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.CONFLICT, message));
+    }
+
     // Vai entrar nesse erro em caso de erros de validação, como por exemplo email (username) inválido, password inválida
     // tudo que não for validado cai no erro abaixo
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -40,8 +52,7 @@ public class ApiExceptionHandler {
     }
 
     // Trata erro em caso de tentar criar uma conta com um username já existente
-    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class,
-            CodigoUniqueViolationException.class})
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
     public ResponseEntity<ErrorMessage> uniqueViolationException(RuntimeException exception,
                                                                  HttpServletRequest request) {
 
