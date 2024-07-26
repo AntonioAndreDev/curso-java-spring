@@ -22,6 +22,19 @@ public class ApiExceptionHandler {
 
     private final MessageSource messageSource;
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorMessage> UserNotFoundException(EntityNotFoundException exception,
+                                                              HttpServletRequest request) {
+        String message = messageSource.getMessage("exception.entityNotFoundException",
+                new Object[]{exception.getRecurso(), exception.getCodigo()}, request.getLocale());
+
+        log.error("ApiError - ", exception.getCause());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, message));
+    }
+
     @ExceptionHandler(CodigoUniqueViolationException.class)
     public ResponseEntity<ErrorMessage> uniqueViolationException(CodigoUniqueViolationException exception,
                                                                  HttpServletRequest request) {
@@ -34,8 +47,6 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.CONFLICT, message));
     }
 
-    // Vai entrar nesse erro em caso de erros de validação, como por exemplo email (username) inválido, password inválida
-    // tudo que não for validado cai no erro abaixo
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> MethodArgumentNotValidException(MethodArgumentNotValidException exception,
                                                                         HttpServletRequest request,
@@ -51,7 +62,6 @@ public class ApiExceptionHandler {
                         messageSource));
     }
 
-    // Trata erro em caso de tentar criar uma conta com um username já existente
     @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
     public ResponseEntity<ErrorMessage> uniqueViolationException(RuntimeException exception,
                                                                  HttpServletRequest request) {
@@ -63,10 +73,9 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.CONFLICT, exception.getMessage()));
     }
 
-    // Trata erro em caso de busca do usuário que nao existir
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorMessage> UserNotFoundException(RuntimeException exception,
-                                                              HttpServletRequest request) {
+    @ExceptionHandler(NenhumaVagaDisponivelException.class)
+    public ResponseEntity<ErrorMessage> NenhumaVagaDisponivelException(RuntimeException exception,
+                                                                       HttpServletRequest request) {
 
         log.error("ApiError - ", exception.getCause());
         return ResponseEntity
@@ -75,7 +84,6 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, exception.getMessage()));
     }
 
-    // Trata erro em caso de erros na senha
     @ExceptionHandler(PasswordInvalidException.class)
     public ResponseEntity<ErrorMessage> PasswordInvalidException(PasswordInvalidException exception,
                                                                  HttpServletRequest request) {
