@@ -2,7 +2,9 @@ package com.mballem.demo_park_api.web.exception;
 
 import com.mballem.demo_park_api.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class ApiExceptionHandler {
+
+    private final MessageSource messageSource;
 
     // Vai entrar nesse erro em caso de erros de validação, como por exemplo email (username) inválido, password inválida
     // tudo que não for validado cai no erro abaixo
@@ -28,7 +33,10 @@ public class ApiExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) inválidos", result));
+                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY,
+                        messageSource.getMessage("message" +
+                                ".invalid.field", null, request.getLocale()), result,
+                        messageSource));
     }
 
     // Trata erro em caso de tentar criar uma conta com um username já existente
