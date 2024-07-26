@@ -76,12 +76,13 @@ public class ApiExceptionHandler {
     @ExceptionHandler(NenhumaVagaDisponivelException.class)
     public ResponseEntity<ErrorMessage> NenhumaVagaDisponivelException(RuntimeException exception,
                                                                        HttpServletRequest request) {
-
+        String message = messageSource.getMessage("exception.NenhumaVagaDisponivelException",
+                null, request.getLocale());
         log.error("ApiError - ", exception.getCause());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, exception.getMessage()));
+                .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, message));
     }
 
     @ExceptionHandler(PasswordInvalidException.class)
