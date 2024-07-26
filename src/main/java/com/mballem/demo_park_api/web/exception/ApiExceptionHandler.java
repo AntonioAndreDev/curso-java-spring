@@ -2,7 +2,9 @@ package com.mballem.demo_park_api.web.exception;
 
 import com.mballem.demo_park_api.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,49 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class ApiExceptionHandler {
 
-    // Vai entrar nesse erro em caso de erros de validação, como por exemplo email (username) inválido, password inválida
-    // tudo que não for validado cai no erro abaixo
+    private final MessageSource messageSource;
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorMessage> UserNotFoundException(EntityNotFoundException exception,
+                                                              HttpServletRequest request) {
+        String message = messageSource.getMessage("exception.entityNotFoundException",
+                new Object[]{exception.getRecurso(), exception.getCodigo()}, request.getLocale());
+
+        log.error("ApiError - ", exception.getCause());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, message));
+    }
+
+    @ExceptionHandler(ReciboNotFindException.class)
+    public ResponseEntity<ErrorMessage> ReciboNotFindException(ReciboNotFindException exception,
+                                                               HttpServletRequest request) {
+        String message = messageSource.getMessage("exception.ReciboNotFindException",
+                new Object[]{exception.getRecurso(), exception.getRecibo()}, request.getLocale());
+
+        log.error("ApiError - ", exception.getCause());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, message));
+    }
+
+    @ExceptionHandler(CodigoUniqueViolationException.class)
+    public ResponseEntity<ErrorMessage> uniqueViolationException(CodigoUniqueViolationException exception,
+                                                                 HttpServletRequest request) {
+        log.error("ApiError - ", exception.getCause());
+        String message = messageSource.getMessage("exception.CodigoUniqueViolationException",
+                new Object[]{exception.getRecurso(), exception.getCodigo()}, request.getLocale());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.CONFLICT, message));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> MethodArgumentNotValidException(MethodArgumentNotValidException exception,
                                                                         HttpServletRequest request,
@@ -28,12 +69,13 @@ public class ApiExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Campo(s) inválidos", result));
+                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY,
+                        messageSource.getMessage("message" +
+                                ".invalid.field", null, request.getLocale()), result,
+                        messageSource));
     }
 
-    // Trata erro em caso de tentar criar uma conta com um username já existente
-    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class,
-            CodigoUniqueViolationException.class})
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
     public ResponseEntity<ErrorMessage> uniqueViolationException(RuntimeException exception,
                                                                  HttpServletRequest request) {
 
@@ -44,19 +86,18 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.CONFLICT, exception.getMessage()));
     }
 
-    // Trata erro em caso de busca do usuário que nao existir
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorMessage> UserNotFoundException(RuntimeException exception,
-                                                              HttpServletRequest request) {
-
+    @ExceptionHandler(NenhumaVagaDisponivelException.class)
+    public ResponseEntity<ErrorMessage> NenhumaVagaDisponivelException(RuntimeException exception,
+                                                                       HttpServletRequest request) {
+        String message = messageSource.getMessage("exception.NenhumaVagaDisponivelException",
+                null, request.getLocale());
         log.error("ApiError - ", exception.getCause());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, exception.getMessage()));
+                .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, message));
     }
 
-    // Trata erro em caso de erros na senha
     @ExceptionHandler(PasswordInvalidException.class)
     public ResponseEntity<ErrorMessage> PasswordInvalidException(PasswordInvalidException exception,
                                                                  HttpServletRequest request) {
