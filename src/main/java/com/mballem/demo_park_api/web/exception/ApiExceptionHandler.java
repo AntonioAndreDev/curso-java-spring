@@ -60,6 +60,18 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.CONFLICT, message));
     }
 
+    @ExceptionHandler(UsernameUniqueViolationException.class)
+    public ResponseEntity<ErrorMessage> UsernameUniqueViolationException(UsernameUniqueViolationException exception,
+                                                                         HttpServletRequest request) {
+        log.error("ApiError - ", exception.getCause());
+        String message = messageSource.getMessage("exception.CodigoUniqueViolationException",
+                new Object[]{exception.getRecurso(), exception.getUsuario()}, request.getLocale());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.CONFLICT, message));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> MethodArgumentNotValidException(MethodArgumentNotValidException exception,
                                                                         HttpServletRequest request,
@@ -75,7 +87,7 @@ public class ApiExceptionHandler {
                         messageSource));
     }
 
-    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
+    @ExceptionHandler(CpfUniqueViolationException.class)
     public ResponseEntity<ErrorMessage> uniqueViolationException(RuntimeException exception,
                                                                  HttpServletRequest request) {
 
