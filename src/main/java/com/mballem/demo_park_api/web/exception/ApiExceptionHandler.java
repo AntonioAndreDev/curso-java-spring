@@ -88,14 +88,16 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(CpfUniqueViolationException.class)
-    public ResponseEntity<ErrorMessage> uniqueViolationException(RuntimeException exception,
-                                                                 HttpServletRequest request) {
+    public ResponseEntity<ErrorMessage> CpfUniqueViolationException(CpfUniqueViolationException exception,
+                                                                    HttpServletRequest request) {
 
+        String message = messageSource.getMessage("exception.CpfUniqueViolationException",
+                new Object[]{exception.getRecurso(), exception.getCpf()}, request.getLocale());
         log.error("ApiError - ", exception.getCause());
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.CONFLICT, exception.getMessage()));
+                .body(new ErrorMessage(request, HttpStatus.CONFLICT, message));
     }
 
     @ExceptionHandler(NenhumaVagaDisponivelException.class)
