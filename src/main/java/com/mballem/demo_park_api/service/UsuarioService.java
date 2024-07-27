@@ -24,14 +24,14 @@ public class UsuarioService {
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             return usuarioRepository.save(usuario);
         } catch (org.springframework.dao.DataIntegrityViolationException exception) {
-            throw new UsernameUniqueViolationException(String.format("Username {%s} já cadastrado!", usuario.getUsername()));
+            throw new UsernameUniqueViolationException("Username", usuario.getUsername());
         }
     }
 
     @Transactional(readOnly = true)
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Usuario {%s} não encontrado!", id))
+                () -> new EntityNotFoundException("Usuario", id)
         );
     }
 

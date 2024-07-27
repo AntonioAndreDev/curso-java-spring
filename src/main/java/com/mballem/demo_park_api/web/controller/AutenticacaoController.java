@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +35,7 @@ public class AutenticacaoController {
 
     private final JwtUserDetailsService detailsService;
     private final AuthenticationManager authenticationManager;
+    private final MessageSource messageSource;
 
     @Operation(
             summary = "Autenticar um usuário",
@@ -68,8 +70,10 @@ public class AutenticacaoController {
         } catch (AuthenticationException ex) {
             log.warn("Bad credentials from username {}", dto.getUsername());
         }
+        String errorMessage = messageSource.getMessage("exception.PasswordNotMatchException", null, request.getLocale());
+        log.info("Locale: {}", request.getLocale());
         return ResponseEntity
                 .badRequest()
-                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Credenciais invalidas"));
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, errorMessage));
     }
 }
