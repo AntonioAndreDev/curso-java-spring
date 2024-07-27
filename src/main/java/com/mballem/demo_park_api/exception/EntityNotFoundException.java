@@ -15,4 +15,9 @@ public class EntityNotFoundException extends RuntimeException {
         this.recurso = recurso;
         this.codigo = codigo;
     }
+
+    public EntityNotFoundException(String recurso, Long id) {
+        this.recurso = recurso;
+        this.codigo = String.valueOf(id);
+    }
 }
