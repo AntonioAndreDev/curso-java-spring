@@ -10,11 +10,11 @@ import lombok.*;
 @ToString
 public class UsuarioCreateDto {
 
-    @NotBlank
-    @Email(message = "Formato do email inválido", regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")
+    @NotBlank(message = "{NotBlank.usuarioCreateDto.username}")
+    @Email(message = "{Email.usuarioCreateDto.username}", regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")
     private String username;
 
-    @NotBlank
-    @Size(min = 6, max = 6)
+    @NotBlank(message = "{NotBlank.usuarioCreateDto.password}")
+    @Size(min = 6, max = 6, message = "{Size.usuarioCreateDto.password}")
     private String password;
 }
