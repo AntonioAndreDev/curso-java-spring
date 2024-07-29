@@ -5,12 +5,10 @@ import com.mballem.demo_park_api.exception.EntityNotFoundException;
 import com.mballem.demo_park_api.exception.PasswordInvalidException;
 import com.mballem.demo_park_api.exception.UsernameUniqueViolationException;
 import com.mballem.demo_park_api.repository.UsuarioRepository;
-import com.resend.*;
-import com.resend.core.exception.ResendException;
-import com.resend.services.emails.model.CreateEmailOptions;
-import com.resend.services.emails.model.CreateEmailResponse;
+import com.mballem.demo_park_api.util.OtpCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,25 +22,18 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final EmailService emailService;
+
     @Transactional
     public Usuario salvar(Usuario usuario) {
         try {
-            final String RESEND_KEY = System.getenv("resend_api_key");
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-            Resend resend = new Resend(RESEND_KEY);
-            CreateEmailOptions params = CreateEmailOptions.builder()
-                    .from("Acme <onboarding@resend.dev>")
-                    .to("antonioandre1008@gmail.com")
-                    .subject("funcionou!")
-                    .html("<h1>Olá, mundo!</h1>")
-                    .build();
-
-            try {
-                resend.emails().send(params);
-            } catch (ResendException e) {
-                log.info("Erro ao enviar email: {}", e.getMessage());
-            }
-            return usuarioRepository.save(usuario);
+            Usuario savedUser = usuarioRepository.save(usuario);
+            String otpCode = OtpCodeUtil.genOtpCode();
+            emailService.sendEmail("antonioandre1008@gmail.com", "funcionou!", String.format(
+                    "Seu código de verificação é: <strong>%s</strong>", otpCode)
+            );
+            return savedUser;
         } catch (org.springframework.dao.DataIntegrityViolationException exception) {
             throw new UsernameUniqueViolationException("Username", usuario.getUsername());
         }
