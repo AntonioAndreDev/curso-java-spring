@@ -40,6 +40,7 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "api/usuarios").permitAll()
                         .requestMatchers(HttpMethod.POST, "api/auth").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/jwt-verify/{token}").permitAll()
                         .requestMatchers(DOCUMENTATION_OPENAPI).permitAll()
                         .anyRequest().authenticated()
                 )
