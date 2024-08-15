@@ -3,10 +3,8 @@ package com.mballem.demo_park_api.web.controller;
 import com.mballem.demo_park_api.jwt.JwtUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +13,10 @@ import java.util.Map;
 @RequestMapping("/api")
 public class JwtController {
 
-    @PostMapping("/jwt-verify/{token}")
-    public ResponseEntity<Map<String, Boolean>> verifyJwt(@PathVariable String token) {
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PostMapping("/refresh")
+    public ResponseEntity<Map<String, Boolean>> verifyJwt(@RequestBody Map<String, String> tokenMap) {
+        String token = tokenMap.get("token");
         Boolean isValid = JwtUtils.isTokenValid(token);
         Map<String, Boolean> response = new HashMap<>();
         response.put("isValid", isValid);
