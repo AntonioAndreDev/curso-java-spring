@@ -20,7 +20,7 @@ public class JwtUtils {
     public static final String SECRET_KEY = System.getenv("SECRET_KEY_JWT");
     public static final long EXPIRE_DAYS = 0;
     public static final long EXPIRE_HOURS = 0;
-    public static final long EXPIRE_MINUTES = 30;
+    public static final long EXPIRE_MINUTES = 1;
 
     private JwtUtils() {
     }
@@ -67,7 +67,7 @@ public class JwtUtils {
     }
 
     // recupera o conteúdo do token
-    private static Claims getClaimsFromToken(String token) {
+    public static Claims getClaimsFromToken(String token) {
         try {
             log.info("Token recebido: {}", token);
             log.info("Entrei na função getClaimsFromToken (GET -> /api/auth)");
@@ -79,6 +79,12 @@ public class JwtUtils {
             log.error(String.format("Token invalido %s", ex.getMessage()));
         }
         return null;
+    }
+
+    public static Date getExpirationDateFromToken(String token) {
+        Claims claims = getClaimsFromToken(token);
+        assert claims != null;
+        return claims.getExpiration();
     }
 
     public static String getUsernameFromToken(String token) {
